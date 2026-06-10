@@ -76,5 +76,83 @@
       ]
     },
     "submitted_at": "2026-06-10T19:18:33.168Z"
+  },
+  {
+    "name": "Jebz",
+    "picks": {
+      "A": [
+        "MEX",
+        "KOR",
+        "CZE",
+        "RSA"
+      ],
+      "B": [
+        "SUI",
+        "CAN",
+        "BIH",
+        "QAT"
+      ],
+      "C": [
+        "BRA",
+        "SCO",
+        "MAR",
+        "HAI"
+      ],
+      "D": [
+        "TUR",
+        "USA",
+        "PAR",
+        "AUS"
+      ],
+      "E": [
+        "GER",
+        "CIV",
+        "ECU",
+        "CUW"
+      ],
+      "F": [
+        "NED",
+        "SWE",
+        "TUN",
+        "JPN"
+      ],
+      "G": [
+        "BEL",
+        "EGY",
+        "IRN",
+        "NZL"
+      ],
+      "H": [
+        "ESP",
+        "URU",
+        "KSA",
+        "CPV"
+      ],
+      "I": [
+        "FRA",
+        "NOR",
+        "SEN",
+        "IRQ"
+      ],
+      "J": [
+        "ARG",
+        "ALG",
+        "AUT",
+        "JOR"
+      ],
+      "K": [
+        "POR",
+        "COL",
+        "COD",
+        "UZB"
+      ],
+      "L": [
+        "ENG",
+        "GHA",
+        "CRO",
+        "PAN"
+      ]
+    },
+    "submitted_at": "2026-06-10T19:27:30.792Z"
   }
 ]
