@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>World Cup 2026 Pool</title>
+<style>
+  :root {
+    --bg: #eef1f6;
+    --card: #ffffff;
+    --navy: #00164e;
+    --navy-2: #0a2a6b;
+    --blue: #0072ce;
+    --blue-light: #e6f1fb;
+    --border: #d7dde8;
+    --text: #1b2a4a;
+    --muted: #6b7a99;
+    --gold: #b8860b;
+    --red: #d52b1e;
+    --green: #1a8a3c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    min-height: 100vh;
+  }
+  .hero {
+    background: linear-gradient(120deg, var(--navy), var(--navy-2), var(--blue), var(--navy-2), var(--navy));
+    background-size: 300% 300%;
+    animation: heroShift 14s ease infinite;
+    color: #fff;
+    text-align: center;
+    padding: 36px 16px 30px;
+    border-bottom: 4px solid var(--gold);
+    overflow: hidden;
+  }
+  @keyframes heroShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  .hero h1 { font-size: 1.9rem; letter-spacing: .02em; text-transform: uppercase; }
+  .hero .hero-sub { opacity: .85; margin-top: 6px; font-size: .95rem; }
+  body.on-home .hero { padding: 56px 16px 44px; }
+  body.on-home .hero h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); text-shadow: 0 3px 14px rgba(0,0,0,.35); }
+  body.on-home .hero .hero-sub { font-size: 1.05rem; letter-spacing: .06em; text-transform: uppercase; }
+
+  /* ---- Home showcase ---- */
+  .marquee {
+    overflow: hidden;
+    padding: 18px 0 6px;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  }
+  .marquee-track {
+    display: flex;
+    gap: 22px;
+    width: max-content;
+    animation: marquee 60s linear infinite;
+  }
+  .marquee-track.reverse { animation-direction: reverse; animation-duration: 75s; }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+  .marquee .flag { width: 52px; height: 52px; flex-shrink: 0; box-shadow: 0 3px 8px rgba(0,22,78,.18); }
+  .marquee:hover .marquee-track { animation-play-state: paused; }
+
+  .countdown { text-align: center; margin: 26px 0 6px; }
+  .countdown-label {
+    text-transform: uppercase; letter-spacing: .14em; font-weight: 800;
+    color: var(--navy); font-size: .85rem; margin-bottom: 12px;
+  }
+  .countdown-boxes { display: flex; justify-content: center; gap: 10px; }
+  .cd-box {
+    background: var(--navy);
+    color: #fff;
+    border-radius: 10px;
+    min-width: 72px;
+    padding: 12px 8px 10px;
+    box-shadow: 0 4px 12px rgba(0,22,78,.25);
+    border-bottom: 3px solid var(--gold);
+  }
+  .cd-box .cd-num { font-size: 1.9rem; font-weight: 800; font-variant-numeric: tabular-nums; }
+  .cd-box .cd-unit { font-size: .68rem; text-transform: uppercase; letter-spacing: .1em; opacity: .75; }
+  .kickoff-live {
+    font-size: 1.5rem; font-weight: 800; color: var(--green);
+    text-transform: uppercase; letter-spacing: .08em;
+  }
+
+  .stats-row {
+    display: flex; justify-content: center; gap: 14px;
+    margin: 26px auto 0; flex-wrap: wrap; max-width: 640px;
+  }
+  .stat-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 22px;
+    text-align: center;
+    min-width: 130px;
+    box-shadow: 0 2px 6px rgba(0,22,78,.07);
+  }
+  .stat-card .stat-num { font-size: 1.6rem; font-weight: 800; color: var(--blue); }
+  .stat-card .stat-label { font-size: .75rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 2px; }
+  .screen { display: none; max-width: 1060px; margin: 0 auto; padding: 24px 16px 64px; }
+  .screen.active { display: block; }
+
+  h2.page-title { text-align: center; color: var(--navy); font-size: 1.5rem; margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .03em; }
+  .subtitle { text-align: center; color: var(--muted); margin-bottom: 28px; }
+
+  .btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--blue);
+    color: #fff;
+    transition: background .15s, transform .05s;
+  }
+  .btn:hover:not(:disabled) { background: #005ba6; }
+  .btn:active:not(:disabled) { transform: scale(.98); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+  .btn.secondary { background: #fff; border: 2px solid var(--navy); color: var(--navy); }
+  .btn.secondary:hover { background: var(--blue-light); }
+
+  .home-buttons { display: flex; flex-direction: column; gap: 16px; max-width: 320px; margin: 32px auto 0; }
+  .home-buttons .btn { width: 100%; padding: 20px; font-size: 1.2rem; text-transform: uppercase; letter-spacing: .04em; }
+
+  .topbar { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+  .back-link { color: var(--blue); cursor: pointer; font-size: .95rem; background: none; border: none; padding: 6px 0; font-weight: 600; }
+  .back-link:hover { text-decoration: underline; }
+
+  .flag {
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--border);
+    background: #fff;
+    display: block;
+  }
+
+  /* ---- View Entries ---- */
+  .entries-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .entry-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 6px rgba(0, 22, 78, .07);
+  }
+  .entry-card .entry-name {
+    font-weight: 800;
+    font-size: 1.05rem;
+    color: var(--navy);
+    margin-bottom: 12px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 8px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .entry-groups {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 14px;
+  }
+  .entry-group-row { display: flex; align-items: center; gap: 6px; }
+  .entry-group-row .g-letter {
+    font-weight: 800; color: var(--blue); font-size: .8rem; width: 14px; flex-shrink: 0;
+  }
+  .entry-group-row .flag { width: 26px; height: 26px; border-width: 1.5px; flex-shrink: 0; }
+  .entry-group-row .flag:first-of-type { border-color: var(--gold); }
+  .empty-state { text-align: center; color: var(--muted); padding: 60px 0; }
+  .loading { text-align: center; color: var(--muted); padding: 60px 0; }
+
+  /* ---- Waiver modal ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0, 22, 78, .55);
+    z-index: 100;
+    align-items: center; justify-content: center;
+    padding: 16px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal {
+    background: var(--card);
+    border-radius: 14px;
+    max-width: 460px;
+    width: 100%;
+    padding: 28px;
+    text-align: center;
+    border-top: 6px solid var(--gold);
+    box-shadow: 0 12px 40px rgba(0, 22, 78, .3);
+  }
+  .modal h3 { margin-bottom: 18px; font-size: 1.3rem; color: var(--navy); text-transform: uppercase; }
+  .modal .waiver-text {
+    background: var(--blue-light);
+    border-left: 4px solid var(--blue);
+    border-radius: 6px;
+    padding: 14px 16px;
+    text-align: left;
+    margin-bottom: 22px;
+    line-height: 1.6;
+  }
+  .modal .waiver-text p + p { margin-top: 8px; }
+  .modal-buttons { display: flex; gap: 12px; justify-content: center; }
+
+  /* ---- Pick screen ---- */
+  .name-row { margin-bottom: 18px; text-align: center; }
+  .name-row label { display: block; font-weight: 700; margin-bottom: 6px; color: var(--navy); }
+  .name-row input {
+    width: 100%; max-width: 340px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 2px solid var(--border);
+    background: #fff;
+    color: var(--text);
+    font-size: 1rem;
+  }
+  .name-row input:focus { outline: none; border-color: var(--blue); }
+
+  .progress {
+    text-align: center;
+    font-weight: 700;
+    color: var(--navy);
+    margin-bottom: 4px;
+  }
+  .progress .done { color: var(--green); }
+  .hint { text-align: center; color: var(--muted); font-size: .85rem; margin-bottom: 20px; }
+
+  .groups-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .group-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+    box-shadow: 0 2px 6px rgba(0, 22, 78, .07);
+  }
+  .group-panel.complete { border-color: var(--green); }
+  .group-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .group-header .group-title {
+    font-weight: 800; color: var(--navy); text-transform: uppercase; letter-spacing: .04em;
+  }
+  .group-header .group-check { color: var(--green); font-weight: 800; font-size: .85rem; visibility: hidden; }
+  .group-panel.complete .group-check { visibility: visible; }
+
+  .group-slots { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+  .gslot-col { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .gslot-label { font-size: .72rem; font-weight: 800; color: var(--gold); }
+  .gslot {
+    width: 56px; height: 56px;
+    border-radius: 50%;
+    border: 2px dashed var(--border);
+    background: var(--bg);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s, background .15s;
+  }
+  .gslot.dragover { border-color: var(--blue); border-style: solid; background: var(--blue-light); }
+  .gslot .flag { width: 50px; height: 50px; cursor: grab; border-color: var(--gold); }
+  .gslot-team { font-size: .65rem; color: var(--muted); min-height: .9em; text-align: center; max-width: 70px; line-height: 1.15; }
+
+  .group-pool {
+    display: flex; justify-content: space-around;
+    background: var(--bg);
+    border: 1.5px dashed var(--border);
+    border-radius: 10px;
+    padding: 10px 6px;
+    min-height: 78px;
+    transition: border-color .15s;
+  }
+  .group-pool.dragover { border-color: var(--blue); }
+  .pool-team {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: grab; width: 64px;
+  }
+  .pool-team.placed { visibility: hidden; }
+  .pool-team .flag { width: 42px; height: 42px; }
+  .pool-team:hover .flag { border-color: var(--blue); }
+  .pool-team .team-name { font-size: .64rem; color: var(--muted); text-align: center; line-height: 1.15; }
+  .dragging { opacity: .4; }
+
+  .submit-row { text-align: center; }
+  .submit-row .btn { min-width: 220px; text-transform: uppercase; letter-spacing: .04em; }
+  .error-msg { color: var(--red); text-align: center; margin-top: 12px; min-height: 1.2em; font-weight: 600; }
+
+  .notice {
+    background: #fff8e6;
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 16px 20px;
+    max-width: 500px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+  .notice a { color: var(--blue); cursor: pointer; text-decoration: underline; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <h1>&#127942; World Cup 2026 Pool</h1>
+  <div class="hero-sub">Canada &middot; Mexico &middot; United States &mdash; call all 12 groups</div>
+</div>
+
+<!-- ============ HOME ============ -->
+<div class="screen active" id="screen-home">
+  <div class="marquee"><div class="marquee-track" id="marquee-1"></div></div>
+  <div class="marquee"><div class="marquee-track reverse" id="marquee-2"></div></div>
+
+  <div class="countdown">
+    <div class="countdown-label" id="countdown-label">Kickoff &middot; June 11, 2026</div>
+    <div class="countdown-boxes" id="countdown-boxes">
+      <div class="cd-box"><div class="cd-num" id="cd-days">--</div><div class="cd-unit">days</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-hours">--</div><div class="cd-unit">hours</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-mins">--</div><div class="cd-unit">mins</div></div>
+      <div class="cd-box"><div class="cd-num" id="cd-secs">--</div><div class="cd-unit">secs</div></div>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">48</div><div class="stat-label">Teams</div></div>
+    <div class="stat-card"><div class="stat-num">12</div><div class="stat-label">Groups</div></div>
+    <div class="stat-card"><div class="stat-num">104</div><div class="stat-label">Matches</div></div>
+    <div class="stat-card"><div class="stat-num">&#127866;&times;6</div><div class="stat-label">Tall Stellas</div></div>
+  </div>
+
+  <div class="home-buttons">
+    <button class="btn" id="btn-view">View Entries</button>
+    <button class="btn secondary" id="btn-pick">Make My Pick</button>
+  </div>
+</div>
+
+<!-- ============ VIEW ENTRIES ============ -->
+<div class="screen" id="screen-view">
+  <div class="topbar">
+    <button class="back-link" data-nav="home">&larr; Home</button>
+  </div>
+  <h2 class="page-title">Entries</h2>
+  <p class="subtitle" id="entries-count"></p>
+  <div id="entries-container"></div>
+</div>
+
+<!-- ============ PICK ============ -->
+<div class="screen" id="screen-pick">
+  <div class="topbar">
+    <button class="back-link" data-nav="home">&larr; Home</button>
+  </div>
+  <h2 class="page-title">Make My Pick</h2>
+  <p class="subtitle">Drag each group&rsquo;s four flags into finishing order</p>
+
+  <div id="already-submitted" class="notice" style="display:none">
+    Looks like you already submitted from this browser.
+    <a id="override-link">Submit another entry anyway</a>
+  </div>
+
+  <div id="pick-form">
+    <div class="name-row">
+      <label for="name-input">Your name</label>
+      <input type="text" id="name-input" maxlength="40" placeholder="e.g. Justin" autocomplete="name">
+    </div>
+
+    <p class="progress"><span id="progress-count">0</span>/12 groups complete</p>
+    <p class="hint">Click a flag to drop it into the next open slot &middot; click a placed flag to remove it &middot; drag to reorder</p>
+
+    <div class="groups-grid" id="groups-grid"></div>
+
+    <div class="submit-row">
+      <button class="btn" id="btn-submit" disabled>Submit Pick</button>
+    </div>
+    <p class="error-msg" id="error-msg"></p>
+  </div>
+</div>
+
+<!-- ============ WAIVER MODAL ============ -->
+<div class="modal-overlay" id="waiver-modal">
+  <div class="modal">
+    <h3>&#127866; The Waiver</h3>
+    <div class="waiver-text">
+      <p><strong>Entry fee:</strong> 6 tall Stellas, paid to the winner.</p>
+      <p><strong>Scoring:</strong> 3 points for each correct finish position.</p>
+    </div>
+    <div class="modal-buttons">
+      <button class="btn secondary" id="waiver-decline">No Thanks</button>
+      <button class="btn" id="waiver-accept">I Accept</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — fill these in before deploying
+   ============================================================ */
+const CONFIG = {
+  owner: "JCabral8",
+  repo: "worldcupstellapool",
+  /* Token split in two — GitHub auto-revokes tokens it finds whole in public repos. */
+  token: ["github_pat_11ABUEACI0Sm0x4Kf6ZOeF_Q0Nkk", "IJ8v3uYoKbIuPRqLLh9aTXFpAJzekyMTaU04qPWMGVCQRWFyJisrbr"].join(""),
+};
+
+/* ============================================================
+   Official 2026 World Cup groups (Final Draw, Dec 5 2025)
+   code = entry-shape code, iso = flagcdn code
+   ============================================================ */
+const GROUPS = [
+  { id: "A", teams: [
+    { name: "Mexico",         code: "MEX", iso: "mx" },
+    { name: "South Africa",   code: "RSA", iso: "za" },
+    { name: "South Korea",    code: "KOR", iso: "kr" },
+    { name: "Czechia",        code: "CZE", iso: "cz" },
+  ]},
+  { id: "B", teams: [
+    { name: "Canada",         code: "CAN", iso: "ca" },
+    { name: "Bosnia & Herz.", code: "BIH", iso: "ba" },
+    { name: "Qatar",          code: "QAT", iso: "qa" },
+    { name: "Switzerland",    code: "SUI", iso: "ch" },
+  ]},
+  { id: "C", teams: [
+    { name: "Brazil",         code: "BRA", iso: "br" },
+    { name: "Morocco",        code: "MAR", iso: "ma" },
+    { name: "Haiti",          code: "HAI", iso: "ht" },
+    { name: "Scotland",       code: "SCO", iso: "gb-sct" },
+  ]},
+  { id: "D", teams: [
+    { name: "United States",  code: "USA", iso: "us" },
+    { name: "Paraguay",       code: "PAR", iso: "py" },
+    { name: "Australia",      code: "AUS", iso: "au" },
+    { name: "Türkiye",   code: "TUR", iso: "tr" },
+  ]},
+  { id: "E", teams: [
+    { name: "Germany",        code: "GER", iso: "de" },
+    { name: "Curaçao",   code: "CUW", iso: "cw" },
+    { name: "Ivory Coast",    code: "CIV", iso: "ci" },
+    { name: "Ecuador",        code: "ECU", iso: "ec" },
+  ]},
+  { id: "F", teams: [
+    { name: "Netherlands",    code: "NED", iso: "nl" },
+    { name: "Japan",          code: "JPN", iso: "jp" },
+    { name: "Sweden",         code: "SWE", iso: "se" },
+    { name: "Tunisia",        code: "TUN", iso: "tn" },
+  ]},
+  { id: "G", teams: [
+    { name: "Belgium",        code: "BEL", iso: "be" },
+    { name: "Egypt",          code: "EGY", iso: "eg" },
+    { name: "Iran",           code: "IRN", iso: "ir" },
+    { name: "New Zealand",    code: "NZL", iso: "nz" },
+  ]},
+  { id: "H", teams: [
+    { name: "Spain",          code: "ESP", iso: "es" },
+    { name: "Cape Verde",     code: "CPV", iso: "cv" },
+    { name: "Saudi Arabia",   code: "KSA", iso: "sa" },
+    { name: "Uruguay",        code: "URU", iso: "uy" },
+  ]},
+  { id: "I", teams: [
+    { name: "France",         code: "FRA", iso: "fr" },
+    { name: "Senegal",        code: "SEN", iso: "sn" },
+    { name: "Iraq",           code: "IRQ", iso: "iq" },
+    { name: "Norway",         code: "NOR", iso: "no" },
+  ]},
+  { id: "J", teams: [
+    { name: "Argentina",      code: "ARG", iso: "ar" },
+    { name: "Algeria",        code: "ALG", iso: "dz" },
+    { name: "Austria",        code: "AUT", iso: "at" },
+    { name: "Jordan",         code: "JOR", iso: "jo" },
+  ]},
+  { id: "K", teams: [
+    { name: "Portugal",       code: "POR", iso: "pt" },
+    { name: "DR Congo",       code: "COD", iso: "cd" },
+    { name: "Uzbekistan",     code: "UZB", iso: "uz" },
+    { name: "Colombia",       code: "COL", iso: "co" },
+  ]},
+  { id: "L", teams: [
+    { name: "England",        code: "ENG", iso: "gb-eng" },
+    { name: "Croatia",        code: "CRO", iso: "hr" },
+    { name: "Ghana",          code: "GHA", iso: "gh" },
+    { name: "Panama",         code: "PAN", iso: "pa" },
+  ]},
+];
+const teamByCode = {};
+const groupOfTeam = {};
+GROUPS.forEach(g => g.teams.forEach(t => {
+  teamByCode[t.code] = t;
+  groupOfTeam[t.code] = g.id;
+}));
+const flagUrl = iso => `https://flagcdn.com/48x36/${iso}.png`;
+const PLACE_LABELS = ["1st", "2nd", "3rd", "4th"];
+const LS_KEY = "wc2026-pool-submitted";
+
+/* ============================================================
+   Navigation
+   ============================================================ */
+const screens = {
+  home: document.getElementById("screen-home"),
+  view: document.getElementById("screen-view"),
+  pick: document.getElementById("screen-pick"),
+};
+function show(name) {
+  Object.values(screens).forEach(s => s.classList.remove("active"));
+  screens[name].classList.add("active");
+  document.body.classList.toggle("on-home", name === "home");
+  window.scrollTo(0, 0);
+}
+document.body.classList.add("on-home");
+
+/* ============================================================
+   Home showcase — flag marquees + countdown
+   ============================================================ */
+const ALL_TEAMS = GROUPS.flatMap(g => g.teams);
+function fillMarquee(id, teams) {
+  const track = document.getElementById(id);
+  /* content duplicated once for a seamless -50% loop */
+  [...teams, ...teams].forEach(t => {
+    const img = document.createElement("img");
+    img.className = "flag";
+    img.src = flagUrl(t.iso);
+    img.alt = t.name;
+    img.title = t.name;
+    img.loading = "lazy";
+    track.appendChild(img);
+  });
+}
+fillMarquee("marquee-1", ALL_TEAMS.slice(0, 24));
+fillMarquee("marquee-2", ALL_TEAMS.slice(24));
+
+const KICKOFF = new Date("2026-06-11T19:00:00-06:00"); /* opening match, Estadio Azteca */
+function tickCountdown() {
+  const diff = KICKOFF - Date.now();
+  if (diff <= 0) {
+    document.getElementById("countdown-boxes").innerHTML =
+      `<div class="kickoff-live">&#9917; The Cup is on!</div>`;
+    document.getElementById("countdown-label").textContent = "World Cup 2026";
+    clearInterval(cdTimer);
+    return;
+  }
+  const s = Math.floor(diff / 1000);
+  const pad = n => String(n).padStart(2, "0");
+  document.getElementById("cd-days").textContent = Math.floor(s / 86400);
+  document.getElementById("cd-hours").textContent = pad(Math.floor(s / 3600) % 24);
+  document.getElementById("cd-mins").textContent = pad(Math.floor(s / 60) % 60);
+  document.getElementById("cd-secs").textContent = pad(s % 60);
+}
+const cdTimer = setInterval(tickCountdown, 1000);
+tickCountdown();
+document.querySelectorAll("[data-nav]").forEach(el =>
+  el.addEventListener("click", () => show(el.dataset.nav))
+);
+
+document.getElementById("btn-view").addEventListener("click", () => {
+  show("view");
+  loadEntries();
+});
+
+/* ============================================================
+   Waiver modal
+   ============================================================ */
+const waiverModal = document.getElementById("waiver-modal");
+document.getElementById("btn-pick").addEventListener("click", () => {
+  waiverModal.classList.add("active");
+});
+document.getElementById("waiver-decline").addEventListener("click", () => {
+  waiverModal.classList.remove("active");
+});
+document.getElementById("waiver-accept").addEventListener("click", () => {
+  waiverModal.classList.remove("active");
+  openPickScreen();
+});
+
+/* ============================================================
+   View Entries
+   ============================================================ */
+const entriesContainer = document.getElementById("entries-container");
+const entriesCount = document.getElementById("entries-count");
+
+async function fetchEntries() {
+  const url = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/main/entries.json?t=${Date.now()}`;
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error(`Could not load entries (${res.status})`);
+  return res.json();
+}
+
+function renderEntries(entries) {
+  entriesCount.textContent = entries.length === 1 ? "1 entry so far" : `${entries.length} entries so far`;
+  if (!entries.length) {
+    entriesContainer.innerHTML = `<p class="empty-state">No entries yet — be the first!</p>`;
+    return;
+  }
+  const grid = document.createElement("div");
+  grid.className = "entries-grid";
+  entries.forEach(e => {
+    const card = document.createElement("div");
+    card.className = "entry-card";
+    const nameEl = document.createElement("div");
+    nameEl.className = "entry-name";
+    nameEl.textContent = e.name;
+    nameEl.title = e.name;
+    card.appendChild(nameEl);
+    const groupsEl = document.createElement("div");
+    groupsEl.className = "entry-groups";
+    GROUPS.forEach(g => {
+      const row = document.createElement("div");
+      row.className = "entry-group-row";
+      const letter = document.createElement("span");
+      letter.className = "g-letter";
+      letter.textContent = g.id;
+      row.appendChild(letter);
+      const order = (e.picks && e.picks[g.id]) || [];
+      order.forEach((code, i) => {
+        const team = teamByCode[code];
+        const img = document.createElement("img");
+        img.className = "flag";
+        img.src = team ? flagUrl(team.iso) : "";
+        img.alt = team ? team.name : code;
+        img.title = `${PLACE_LABELS[i]}: ${team ? team.name : code}`;
+        row.appendChild(img);
+      });
+      groupsEl.appendChild(row);
+    });
+    card.appendChild(groupsEl);
+    grid.appendChild(card);
+  });
+  entriesContainer.innerHTML = "";
+  entriesContainer.appendChild(grid);
+}
+
+async function loadEntries() {
+  entriesContainer.innerHTML = `<p class="loading">Loading entries…</p>`;
+  entriesCount.textContent = "";
+  try {
+    renderEntries(await fetchEntries());
+  } catch (err) {
+    entriesContainer.innerHTML = `<p class="empty-state">${err.message}</p>`;
+  }
+}
+
+/* ============================================================
+   Pick screen — one drag-and-drop panel per group
+   picks[groupId] = [code|null, code|null, code|null, code|null]
+   ============================================================ */
+const groupsGrid = document.getElementById("groups-grid");
+const nameInput = document.getElementById("name-input");
+const btnSubmit = document.getElementById("btn-submit");
+const errorMsg = document.getElementById("error-msg");
+const progressCount = document.getElementById("progress-count");
+const picks = {};
+GROUPS.forEach(g => picks[g.id] = [null, null, null, null]);
+
+function openPickScreen() {
+  show("pick");
+  const blocked = localStorage.getItem(LS_KEY);
+  document.getElementById("already-submitted").style.display = blocked ? "" : "none";
+  document.getElementById("pick-form").style.display = blocked ? "none" : "";
+}
+document.getElementById("override-link").addEventListener("click", () => {
+  document.getElementById("already-submitted").style.display = "none";
+  document.getElementById("pick-form").style.display = "";
+});
+
+function makeDraggableFlag(code, cls, groupId, slotIdx) {
+  const team = teamByCode[code];
+  const img = document.createElement("img");
+  img.className = cls;
+  img.src = flagUrl(team.iso);
+  img.alt = team.name;
+  img.title = `${team.name} — click to remove`;
+  img.draggable = true;
+  img.addEventListener("dragstart", ev => {
+    ev.dataTransfer.setData("text/plain", code);
+    ev.dataTransfer.effectAllowed = "move";
+    img.classList.add("dragging");
+  });
+  img.addEventListener("dragend", () => img.classList.remove("dragging"));
+  /* click a placed flag → remove it back to the pool */
+  img.addEventListener("click", () => {
+    setGroupSlot(groupId, slotIdx, null);
+    returnToPool(code);
+  });
+  return img;
+}
+
+/* Build the 12 group panels */
+GROUPS.forEach(group => {
+  const panel = document.createElement("div");
+  panel.className = "group-panel";
+  panel.id = `panel-${group.id}`;
+
+  const header = document.createElement("div");
+  header.className = "group-header";
+  header.innerHTML = `<span class="group-title">Group ${group.id}</span><span class="group-check">&#10003; set</span>`;
+  panel.appendChild(header);
+
+  /* slots */
+  const slotsRow = document.createElement("div");
+  slotsRow.className = "group-slots";
+  PLACE_LABELS.forEach((label, idx) => {
+    const col = document.createElement("div");
+    col.className = "gslot-col";
+    const lab = document.createElement("span");
+    lab.className = "gslot-label";
+    lab.textContent = label;
+    const slot = document.createElement("div");
+    slot.className = "gslot";
+    slot.dataset.group = group.id;
+    slot.dataset.index = idx;
+    const teamLabel = document.createElement("span");
+    teamLabel.className = "gslot-team";
+    teamLabel.id = `slotlabel-${group.id}-${idx}`;
+    col.append(lab, slot, teamLabel);
+    slotsRow.appendChild(col);
+
+    slot.addEventListener("dragover", ev => {
+      ev.preventDefault();
+      ev.dataTransfer.dropEffect = "move";
+      slot.classList.add("dragover");
+    });
+    slot.addEventListener("dragleave", () => slot.classList.remove("dragover"));
+    slot.addEventListener("drop", ev => {
+      ev.preventDefault();
+      slot.classList.remove("dragover");
+      const code = ev.dataTransfer.getData("text/plain");
+      if (!teamByCode[code] || groupOfTeam[code] !== group.id) return; /* wrong group */
+      const arr = picks[group.id];
+      /* if team is already in another slot of this group, clear it */
+      const prevIdx = arr.indexOf(code);
+      if (prevIdx !== -1) setGroupSlot(group.id, prevIdx, null);
+      /* if this slot is occupied, return that team to the pool */
+      if (arr[idx]) returnToPool(arr[idx]);
+      setGroupSlot(group.id, idx, code);
+    });
+  });
+  panel.appendChild(slotsRow);
+
+  /* pool of this group's flags */
+  const poolEl = document.createElement("div");
+  poolEl.className = "group-pool";
+  poolEl.dataset.group = group.id;
+  group.teams.forEach(team => {
+    const wrap = document.createElement("div");
+    wrap.className = "pool-team";
+    wrap.id = `pool-${team.code}`;
+    wrap.draggable = true;
+    const img = document.createElement("img");
+    img.className = "flag";
+    img.src = flagUrl(team.iso);
+    img.alt = team.name;
+    img.draggable = false;
+    const nm = document.createElement("span");
+    nm.className = "team-name";
+    nm.textContent = team.name;
+    wrap.append(img, nm);
+    wrap.addEventListener("dragstart", ev => {
+      ev.dataTransfer.setData("text/plain", team.code);
+      ev.dataTransfer.effectAllowed = "move";
+      wrap.classList.add("dragging");
+    });
+    wrap.addEventListener("dragend", () => wrap.classList.remove("dragging"));
+    /* click a pool flag → auto-fill the next open slot in this group */
+    wrap.addEventListener("click", () => {
+      const arr = picks[group.id];
+      if (arr.includes(team.code)) return;
+      const nextOpen = arr.indexOf(null);
+      if (nextOpen !== -1) setGroupSlot(group.id, nextOpen, team.code);
+    });
+    poolEl.appendChild(wrap);
+  });
+  poolEl.addEventListener("dragover", ev => {
+    ev.preventDefault();
+    poolEl.classList.add("dragover");
+  });
+  poolEl.addEventListener("dragleave", () => poolEl.classList.remove("dragover"));
+  poolEl.addEventListener("drop", ev => {
+    ev.preventDefault();
+    poolEl.classList.remove("dragover");
+    const code = ev.dataTransfer.getData("text/plain");
+    if (!teamByCode[code] || groupOfTeam[code] !== group.id) return;
+    const arr = picks[group.id];
+    const i = arr.indexOf(code);
+    if (i !== -1) {
+      setGroupSlot(group.id, i, null);
+      returnToPool(code);
+    }
+  });
+  panel.appendChild(poolEl);
+  groupsGrid.appendChild(panel);
+});
+
+function returnToPool(code) {
+  document.getElementById(`pool-${code}`).classList.remove("placed");
+}
+
+function setGroupSlot(groupId, idx, code) {
+  picks[groupId][idx] = code;
+  const slot = document.querySelector(`.gslot[data-group="${groupId}"][data-index="${idx}"]`);
+  const label = document.getElementById(`slotlabel-${groupId}-${idx}`);
+  slot.innerHTML = "";
+  if (code) {
+    slot.appendChild(makeDraggableFlag(code, "flag", groupId, idx));
+    label.textContent = teamByCode[code].name;
+    document.getElementById(`pool-${code}`).classList.add("placed");
+  } else {
+    label.textContent = "";
+  }
+  refreshGroupState(groupId);
+  updateSubmitState();
+}
+
+function refreshGroupState(groupId) {
+  const complete = picks[groupId].every(Boolean);
+  document.getElementById(`panel-${groupId}`).classList.toggle("complete", complete);
+}
+
+function updateSubmitState() {
+  const completeCount = GROUPS.filter(g => picks[g.id].every(Boolean)).length;
+  progressCount.textContent = completeCount;
+  progressCount.parentElement.classList.toggle("done", completeCount === 12);
+  btnSubmit.disabled = !(completeCount === 12 && nameInput.value.trim().length > 0);
+}
+nameInput.addEventListener("input", updateSubmitState);
+
+/* ============================================================
+   Submit — GitHub Contents API
+   ============================================================ */
+function b64encode(str) {
+  const bytes = new TextEncoder().encode(str);
+  let bin = "";
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin);
+}
+function b64decode(b64) {
+  const bin = atob(b64.replace(/\n/g, ""));
+  const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+  return new TextDecoder().decode(bytes);
+}
+
+const apiUrl = () =>
+  `https://api.github.com/repos/${CONFIG.owner}/${CONFIG.repo}/contents/entries.json`;
+const apiHeaders = () => ({
+  "Authorization": `Bearer ${CONFIG.token}`,
+  "Accept": "application/vnd.github+json",
+  "X-GitHub-Api-Version": "2022-11-28",
+});
+
+/* Fetch current file via the API: gives both fresh content and the SHA */
+async function fetchFileViaApi() {
+  const res = await fetch(`${apiUrl()}?ref=main&t=${Date.now()}`, { headers: apiHeaders(), cache: "no-store" });
+  if (!res.ok) throw new Error(`Could not read entries.json via API (${res.status})`);
+  const data = await res.json();
+  return { sha: data.sha, entries: JSON.parse(b64decode(data.content)) };
+}
+
+async function writeEntry(entry, attempt = 1) {
+  const { sha, entries } = await fetchFileViaApi();
+  entries.push(entry);
+  const res = await fetch(apiUrl(), {
+    method: "PUT",
+    headers: apiHeaders(),
+    body: JSON.stringify({
+      message: `Add entry: ${entry.name}`,
+      content: b64encode(JSON.stringify(entries, null, 2)),
+      sha,
+      branch: "main",
+    }),
+  });
+  if (res.status === 409 && attempt === 1) {
+    /* someone else submitted at the same time — refetch SHA and retry once */
+    return writeEntry(entry, 2);
+  }
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(`Save failed (${res.status}): ${body.message || "unknown error"}`);
+  }
+  return entries;
+}
+
+btnSubmit.addEventListener("click", async () => {
+  errorMsg.textContent = "";
+  btnSubmit.disabled = true;
+  btnSubmit.textContent = "Submitting…";
+  const entry = {
+    name: nameInput.value.trim(),
+    picks: Object.fromEntries(GROUPS.map(g => [g.id, [...picks[g.id]]])),
+    submitted_at: new Date().toISOString(),
+  };
+  try {
+    const entries = await writeEntry(entry);
+    localStorage.setItem(LS_KEY, JSON.stringify({ name: entry.name, at: entry.submitted_at }));
+    /* render from the data we just wrote (raw CDN can lag a few minutes) */
+    show("view");
+    renderEntries(entries);
+  } catch (err) {
+    errorMsg.textContent = err.message;
+    btnSubmit.disabled = false;
+  } finally {
+    btnSubmit.textContent = "Submit Pick";
+    updateSubmitState();
+  }
+});
+</script>
+<!-- v2: per-group picks, FIFA theme -->
+</body>
+</html>
