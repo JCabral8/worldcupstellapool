@@ -722,7 +722,7 @@ function fillMarquee(id, teams) {
 fillMarquee("marquee-1", ALL_TEAMS.slice(0, 24));
 fillMarquee("marquee-2", ALL_TEAMS.slice(24));
 
-const KICKOFF = new Date("2026-06-11T19:00:00-06:00"); /* opening match, Estadio Azteca */
+const KICKOFF = new Date("2026-06-11T13:00:00-06:00"); /* opening match, Estadio Azteca — 1pm CDMX / 3pm ET */
 const cupStarted = () => Date.now() >= KICKOFF;
 function lockForKickoff() {
   const bp = document.getElementById("btn-pick");
