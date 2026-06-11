@@ -26,25 +26,181 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
   }
+  /* ---- Hero: stadium night ---- */
   .hero {
-    background: linear-gradient(120deg, var(--navy), var(--navy-2), var(--blue), var(--navy-2), var(--navy));
-    background-size: 300% 300%;
-    animation: heroShift 14s ease infinite;
+    position: relative;
+    isolation: isolate;
+    background: radial-gradient(130% 95% at 50% -20%, #16357c 0%, var(--navy) 48%, #000a26 100%);
     color: #fff;
     text-align: center;
-    padding: 36px 16px 30px;
-    border-bottom: 4px solid var(--gold);
+    padding: 30px 16px 26px;
     overflow: hidden;
   }
-  @keyframes heroShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
+  .hero::after { /* host-nations ribbon */
+    content: "";
+    position: absolute; left: 0; right: 0; bottom: 0; height: 5px;
+    background: linear-gradient(90deg,
+      #d52b1e 0 33.4%, #0072ce 33.4% 66.7%, #006847 66.7% 100%);
+    z-index: 5;
   }
-  .hero h1 { font-size: 1.9rem; letter-spacing: .02em; text-transform: uppercase; }
-  .hero .hero-sub { opacity: .85; margin-top: 6px; font-size: .95rem; }
-  body.on-home .hero { padding: 56px 16px 44px; }
-  body.on-home .hero h1 { font-size: clamp(2.1rem, 6vw, 3.4rem); text-shadow: 0 3px 14px rgba(0,0,0,.35); }
-  body.on-home .hero .hero-sub { font-size: 1.05rem; letter-spacing: .06em; text-transform: uppercase; }
+  .hero-content { position: relative; z-index: 3; }
+
+  /* floodlight beams */
+  .hero .beam {
+    position: absolute; top: -30%; height: 170%; width: 26%;
+    background: linear-gradient(180deg, rgba(173, 203, 255, .26), rgba(173, 203, 255, 0) 72%);
+    filter: blur(10px);
+    transform-origin: top center;
+    pointer-events: none;
+    z-index: 1;
+  }
+  .hero .beam.b1 { left: 3%; animation: swayL 11s ease-in-out infinite alternate; }
+  .hero .beam.b2 { right: 3%; animation: swayR 11s ease-in-out infinite alternate; }
+  @keyframes swayL { from { transform: rotate(12deg); } to { transform: rotate(26deg); } }
+  @keyframes swayR { from { transform: rotate(-12deg); } to { transform: rotate(-26deg); } }
+
+  /* crowd camera flashes */
+  .hero .flashes {
+    position: absolute; top: 10%; left: 0;
+    width: 3px; height: 3px; border-radius: 50%;
+    background: #fff;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0;
+    box-shadow: 6vw 10px #fff, 14vw 46px #fff, 23vw 5px #fff, 31vw 32px #fff,
+                42vw 14px #fff, 55vw 40px #fff, 63vw 8px #fff, 72vw 28px #fff,
+                81vw 12px #fff, 90vw 36px #fff, 96vw 18px #fff;
+    animation: twinkle 4.2s linear infinite;
+  }
+  .hero .flashes.f2 {
+    top: 20%;
+    animation-delay: 2.1s;
+    box-shadow: 3vw 30px #fff, 11vw 8px #fff, 19vw 42px #fff, 28vw 16px #fff,
+                37vw 38px #fff, 48vw 6px #fff, 59vw 24px #fff, 68vw 44px #fff,
+                77vw 10px #fff, 86vw 30px #fff, 94vw 48px #fff;
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0; }
+    6%  { opacity: .9; }
+    12% { opacity: .15; }
+    18% { opacity: .65; }
+    30% { opacity: 0; }
+  }
+
+  /* the pitch */
+  .hero-pitch {
+    position: absolute; left: -12%; right: -12%; bottom: 0; height: 96px;
+    overflow: hidden;
+    background:
+      repeating-linear-gradient(90deg, rgba(255, 255, 255, .05) 0 90px, rgba(0, 0, 0, .08) 90px 180px),
+      linear-gradient(180deg, #1d8a3e, #11602a);
+    transform: perspective(420px) rotateX(42deg);
+    transform-origin: bottom center;
+    border-top: 2px solid rgba(255, 255, 255, .75);
+    z-index: 0;
+  }
+  .hero-pitch::before { /* center circle */
+    content: "";
+    position: absolute; left: 50%; top: -100px;
+    width: 200px; height: 200px; margin-left: -100px;
+    border: 2px solid rgba(255, 255, 255, .75);
+    border-radius: 50%;
+  }
+  .hero-pitch::after { /* center spot */
+    content: "";
+    position: absolute; left: 50%; top: 22px;
+    width: 6px; height: 6px; margin-left: -3px;
+    background: rgba(255, 255, 255, .75);
+    border-radius: 50%;
+  }
+
+  /* rolling ball */
+  .hero-ball {
+    position: absolute; bottom: 44px; left: -70px;
+    z-index: 2;
+    pointer-events: none;
+    animation: ballTravel 9s linear infinite;
+  }
+  .hero-ball span {
+    display: block;
+    font-size: 30px;
+    line-height: 1;
+    filter: drop-shadow(0 10px 4px rgba(0, 0, 0, .35));
+    animation: ballSpin 1.4s linear infinite, ballBounce .7s ease-in-out infinite alternate;
+  }
+  @keyframes ballTravel { to { transform: translateX(calc(100vw + 140px)); } }
+  @keyframes ballSpin { to { rotate: 360deg; } }
+  @keyframes ballBounce { from { translate: 0 0; } to { translate: 0 -16px; } }
+
+  /* trophy + golden title */
+  .hero-trophy {
+    display: block;
+    font-size: 2.2rem;
+    line-height: 1.1;
+    animation: trophyFloat 3.6s ease-in-out infinite;
+    filter: drop-shadow(0 0 16px rgba(255, 200, 40, .55));
+  }
+  @keyframes trophyFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+  .hero h1 {
+    font-size: 1.9rem;
+    font-weight: 900;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    background:
+      linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .95) 50%, transparent 62%),
+      linear-gradient(180deg, #fff3c4 0%, #ffd34d 38%, #c9920e 55%, #ffe27a 72%, #f3b71f 100%);
+    background-size: 250% 100%, 100% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: goldShine 5s ease-in-out infinite;
+  }
+  @keyframes goldShine {
+    0%, 55% { background-position: 130% 0, 0 0; }
+    100%    { background-position: -30% 0, 0 0; }
+  }
+  .hero .hero-sub {
+    margin-top: 8px;
+    display: flex; justify-content: center; align-items: center;
+    gap: 10px; flex-wrap: wrap;
+    font-size: .95rem;
+  }
+  .hero-sub .host { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
+  .hero-sub .flag {
+    width: 20px; height: 20px;
+    display: inline-block;
+    border-width: 1.5px;
+    border-color: rgba(255, 255, 255, .55);
+  }
+  .hero-sub .dot { color: var(--gold); font-weight: 800; }
+  .hero-tag {
+    margin-top: 8px;
+    font-size: .74rem;
+    letter-spacing: .22em;
+    text-transform: uppercase;
+    color: #ffd34d;
+    opacity: .85;
+  }
+
+  body.on-home .hero { padding: 54px 16px 104px; }
+  body.on-home .hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
+  body.on-home .hero-trophy { font-size: clamp(2.6rem, 7vw, 3.4rem); }
+  body.on-home .hero .hero-sub { font-size: 1.05rem; }
+  body:not(.on-home) .hero { padding: 20px 16px 18px; }
+  body:not(.on-home) .hero-trophy,
+  body:not(.on-home) .hero-tag,
+  body:not(.on-home) .hero-pitch,
+  body:not(.on-home) .hero-ball { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero .beam, .hero .flashes, .hero-trophy, .hero h1,
+    .hero-ball, .hero-ball span { animation: none; }
+    .hero-ball { display: none; }
+  }
 
   /* ---- Home showcase ---- */
   .marquee {
@@ -404,8 +560,24 @@
 <body>
 
 <div class="hero">
-  <h1>&#127942; World Cup 2026 Pool</h1>
-  <div class="hero-sub">Canada &middot; Mexico &middot; United States &mdash; call all 12 groups</div>
+  <div class="beam b1"></div>
+  <div class="beam b2"></div>
+  <i class="flashes"></i>
+  <i class="flashes f2"></i>
+  <div class="hero-pitch"></div>
+  <div class="hero-ball"><span>&#9917;</span></div>
+  <div class="hero-content">
+    <span class="hero-trophy">&#127942;</span>
+    <h1>World Cup 2026 Pool</h1>
+    <div class="hero-sub">
+      <span class="host"><img class="flag" src="https://flagcdn.com/48x36/ca.png" alt="Canada">Canada</span>
+      <span class="dot">&bull;</span>
+      <span class="host"><img class="flag" src="https://flagcdn.com/48x36/mx.png" alt="Mexico">Mexico</span>
+      <span class="dot">&bull;</span>
+      <span class="host"><img class="flag" src="https://flagcdn.com/48x36/us.png" alt="United States">United States</span>
+    </div>
+    <div class="hero-tag">Call all 12 groups &mdash; winner takes the Stellas</div>
+  </div>
 </div>
 
 <!-- ============ HOME ============ -->
