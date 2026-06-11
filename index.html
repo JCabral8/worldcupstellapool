@@ -182,6 +182,94 @@
   .empty-state { text-align: center; color: var(--muted); padding: 60px 0; }
   .loading { text-align: center; color: var(--muted); padding: 60px 0; }
 
+  .view-toggle { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+  .view-toggle button {
+    padding: 8px 20px;
+    border-radius: 999px;
+    border: 2px solid var(--navy);
+    background: #fff;
+    color: var(--navy);
+    font-weight: 700;
+    font-size: .85rem;
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .view-toggle button.active { background: var(--navy); color: #fff; }
+
+  .entry-edit-btn {
+    display: block;
+    margin: 12px auto 0;
+    padding: 6px 16px;
+    border-radius: 6px;
+    border: 1.5px solid var(--blue);
+    background: #fff;
+    color: var(--blue);
+    font-weight: 700;
+    font-size: .8rem;
+    cursor: pointer;
+  }
+  .entry-edit-btn:hover { background: var(--blue-light); }
+
+  /* ---- Matrix view ---- */
+  .matrix-wrap {
+    overflow: auto;
+    max-height: 75vh;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 2px 6px rgba(0, 22, 78, .07);
+  }
+  table.matrix { border-collapse: separate; border-spacing: 0; width: 100%; }
+  .matrix th, .matrix td {
+    padding: 5px 12px;
+    text-align: center;
+    white-space: nowrap;
+    border-bottom: 1px solid var(--border);
+  }
+  .matrix thead th {
+    position: sticky; top: 0; z-index: 3;
+    background: var(--navy);
+    color: #fff;
+    font-size: .8rem;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 10px 12px;
+  }
+  .matrix thead th .th-edit {
+    display: block;
+    margin: 5px auto 0;
+    background: none;
+    border: 1px solid rgba(255, 255, 255, .5);
+    border-radius: 5px;
+    color: #fff;
+    font-size: .65rem;
+    padding: 2px 9px;
+    cursor: pointer;
+  }
+  .matrix thead th .th-edit:hover { background: rgba(255, 255, 255, .15); }
+  .matrix .rowhead {
+    position: sticky; left: 0; z-index: 2;
+    background: var(--blue-light);
+    color: var(--navy);
+    font-weight: 800;
+    font-size: .78rem;
+    text-align: left;
+  }
+  .matrix thead .rowhead { z-index: 4; background: var(--navy); color: #fff; }
+  .matrix tr.group-start th, .matrix tr.group-start td { border-top: 2px solid var(--navy); }
+  .matrix .cell-team { display: inline-flex; align-items: center; gap: 6px; }
+  .matrix td .flag { width: 24px; height: 24px; border-width: 1.5px; }
+  .matrix .cell-code { font-size: .72rem; font-weight: 700; }
+  .matrix td.diff { background: #fff3d6; }
+  .matrix td.diff .cell-code { color: var(--gold); }
+  .matrix-legend { text-align: center; color: var(--muted); font-size: .8rem; margin-top: 10px; }
+  .matrix-legend .swatch {
+    display: inline-block; width: 12px; height: 12px;
+    background: #fff3d6; border: 1px solid var(--gold); border-radius: 3px;
+    vertical-align: -1px; margin-right: 4px;
+  }
+
   /* ---- Waiver modal ---- */
   .modal-overlay {
     display: none;
@@ -355,6 +443,10 @@
   </div>
   <h2 class="page-title">Entries</h2>
   <p class="subtitle" id="entries-count"></p>
+  <div class="view-toggle" id="view-toggle" style="display:none">
+    <button data-view="matrix" class="active">Matrix</button>
+    <button data-view="cards">Cards</button>
+  </div>
   <div id="entries-container"></div>
 </div>
 
@@ -363,7 +455,7 @@
   <div class="topbar">
     <button class="back-link" data-nav="home">&larr; Home</button>
   </div>
-  <h2 class="page-title">Make My Pick</h2>
+  <h2 class="page-title" id="pick-title">Make My Pick</h2>
   <p class="subtitle">Drag each group&rsquo;s four flags into finishing order</p>
 
   <div id="already-submitted" class="notice" style="display:none">
@@ -540,12 +632,19 @@ fillMarquee("marquee-1", ALL_TEAMS.slice(0, 24));
 fillMarquee("marquee-2", ALL_TEAMS.slice(24));
 
 const KICKOFF = new Date("2026-06-11T19:00:00-06:00"); /* opening match, Estadio Azteca */
+const cupStarted = () => Date.now() >= KICKOFF;
+function lockForKickoff() {
+  const bp = document.getElementById("btn-pick");
+  bp.disabled = true;
+  bp.textContent = "Picks Locked";
+}
 function tickCountdown() {
   const diff = KICKOFF - Date.now();
   if (diff <= 0) {
     document.getElementById("countdown-boxes").innerHTML =
       `<div class="kickoff-live">&#9917; The Cup is on!</div>`;
     document.getElementById("countdown-label").textContent = "World Cup 2026";
+    lockForKickoff();
     clearInterval(cdTimer);
     return;
   }
@@ -587,6 +686,9 @@ document.getElementById("waiver-accept").addEventListener("click", () => {
    ============================================================ */
 const entriesContainer = document.getElementById("entries-container");
 const entriesCount = document.getElementById("entries-count");
+const viewToggle = document.getElementById("view-toggle");
+let loadedEntries = [];
+let currentView = "matrix";
 
 async function fetchEntries() {
   const url = `https://raw.githubusercontent.com/${CONFIG.owner}/${CONFIG.repo}/main/entries.json?t=${Date.now()}`;
@@ -595,15 +697,30 @@ async function fetchEntries() {
   return res.json();
 }
 
+viewToggle.querySelectorAll("button").forEach(btn =>
+  btn.addEventListener("click", () => {
+    currentView = btn.dataset.view;
+    viewToggle.querySelectorAll("button").forEach(b => b.classList.toggle("active", b === btn));
+    renderEntries(loadedEntries);
+  })
+);
+
 function renderEntries(entries) {
+  loadedEntries = entries;
   entriesCount.textContent = entries.length === 1 ? "1 entry so far" : `${entries.length} entries so far`;
+  viewToggle.style.display = entries.length ? "" : "none";
+  entriesContainer.innerHTML = "";
   if (!entries.length) {
     entriesContainer.innerHTML = `<p class="empty-state">No entries yet — be the first!</p>`;
     return;
   }
+  entriesContainer.appendChild(currentView === "matrix" ? buildMatrix(entries) : buildCards(entries));
+}
+
+function buildCards(entries) {
   const grid = document.createElement("div");
   grid.className = "entries-grid";
-  entries.forEach(e => {
+  entries.forEach((e, entryIdx) => {
     const card = document.createElement("div");
     card.className = "entry-card";
     const nameEl = document.createElement("div");
@@ -633,10 +750,97 @@ function renderEntries(entries) {
       groupsEl.appendChild(row);
     });
     card.appendChild(groupsEl);
+    if (!cupStarted()) {
+      const editBtn = document.createElement("button");
+      editBtn.className = "entry-edit-btn";
+      editBtn.textContent = "✎ Edit picks";
+      editBtn.addEventListener("click", () => startEdit(entryIdx));
+      card.appendChild(editBtn);
+    }
     grid.appendChild(card);
   });
-  entriesContainer.innerHTML = "";
-  entriesContainer.appendChild(grid);
+  return grid;
+}
+
+/* Matrix: one row per group slot, one column per entrant.
+   Cells that break from the most-picked team in their row get highlighted. */
+function buildMatrix(entries) {
+  const frag = document.createDocumentFragment();
+  const wrap = document.createElement("div");
+  wrap.className = "matrix-wrap";
+  const table = document.createElement("table");
+  table.className = "matrix";
+
+  const thead = document.createElement("thead");
+  const headRow = document.createElement("tr");
+  const corner = document.createElement("th");
+  corner.className = "rowhead";
+  corner.textContent = "Group";
+  headRow.appendChild(corner);
+  entries.forEach((e, entryIdx) => {
+    const th = document.createElement("th");
+    th.textContent = e.name;
+    th.title = e.name;
+    if (!cupStarted()) {
+      const editBtn = document.createElement("button");
+      editBtn.className = "th-edit";
+      editBtn.textContent = "✎ Edit";
+      editBtn.addEventListener("click", () => startEdit(entryIdx));
+      th.appendChild(editBtn);
+    }
+    headRow.appendChild(th);
+  });
+  thead.appendChild(headRow);
+  table.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  GROUPS.forEach(g => {
+    PLACE_LABELS.forEach((label, idx) => {
+      const tr = document.createElement("tr");
+      if (idx === 0) tr.className = "group-start";
+      const th = document.createElement("th");
+      th.className = "rowhead";
+      th.textContent = `${g.id} · ${label}`;
+      tr.appendChild(th);
+
+      const codes = entries.map(e => (e.picks && e.picks[g.id] && e.picks[g.id][idx]) || null);
+      const counts = {};
+      codes.forEach(c => { if (c) counts[c] = (counts[c] || 0) + 1; });
+      const consensus = Object.keys(counts).sort((a, b) => counts[b] - counts[a])[0];
+      const unanimous = codes.every(c => c === codes[0]);
+
+      codes.forEach(code => {
+        const td = document.createElement("td");
+        if (code) {
+          const team = teamByCode[code];
+          const cell = document.createElement("span");
+          cell.className = "cell-team";
+          const img = document.createElement("img");
+          img.className = "flag";
+          img.src = team ? flagUrl(team.iso) : "";
+          img.alt = team ? team.name : code;
+          const codeEl = document.createElement("span");
+          codeEl.className = "cell-code";
+          codeEl.textContent = code;
+          cell.append(img, codeEl);
+          cell.title = team ? team.name : code;
+          td.appendChild(cell);
+        }
+        if (!unanimous && code !== consensus) td.classList.add("diff");
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+  });
+  table.appendChild(tbody);
+  wrap.appendChild(table);
+  frag.appendChild(wrap);
+
+  const legend = document.createElement("p");
+  legend.className = "matrix-legend";
+  legend.innerHTML = `<span class="swatch"></span>differs from the most popular pick`;
+  frag.appendChild(legend);
+  return frag;
 }
 
 async function loadEntries() {
@@ -661,11 +865,53 @@ const progressCount = document.getElementById("progress-count");
 const picks = {};
 GROUPS.forEach(g => picks[g.id] = [null, null, null, null]);
 
+/* When set, submitting replaces this entry instead of adding a new one. */
+let editing = null;
+
 function openPickScreen() {
+  if (editing) { /* leaving a previous edit — start fresh */
+    editing = null;
+    nameInput.value = "";
+    resetPicks();
+  }
+  document.getElementById("pick-title").textContent = "Make My Pick";
+  btnSubmit.textContent = "Submit Pick";
   show("pick");
   const blocked = localStorage.getItem(LS_KEY);
   document.getElementById("already-submitted").style.display = blocked ? "" : "none";
   document.getElementById("pick-form").style.display = blocked ? "none" : "";
+}
+
+function resetPicks() {
+  GROUPS.forEach(g => {
+    picks[g.id].forEach((code, i) => {
+      if (code) {
+        setGroupSlot(g.id, i, null);
+        returnToPool(code);
+      }
+    });
+  });
+}
+
+/* Edit an existing entry — open until kickoff, honor system */
+function startEdit(entryIdx) {
+  const entry = loadedEntries[entryIdx];
+  if (!entry || cupStarted()) return;
+  editing = { name: entry.name, submitted_at: entry.submitted_at };
+  resetPicks();
+  nameInput.value = entry.name;
+  GROUPS.forEach(g => {
+    const order = (entry.picks && entry.picks[g.id]) || [];
+    order.forEach((code, i) => {
+      if (teamByCode[code] && groupOfTeam[code] === g.id) setGroupSlot(g.id, i, code);
+    });
+  });
+  document.getElementById("pick-title").textContent = `Editing: ${entry.name}`;
+  btnSubmit.textContent = "Save Changes";
+  show("pick");
+  document.getElementById("already-submitted").style.display = "none";
+  document.getElementById("pick-form").style.display = "";
+  updateSubmitState();
 }
 document.getElementById("override-link").addEventListener("click", () => {
   document.getElementById("already-submitted").style.display = "none";
@@ -866,12 +1112,19 @@ async function fetchFileViaApi() {
 
 async function writeEntry(entry, attempt = 1) {
   const { sha, entries } = await fetchFileViaApi();
-  entries.push(entry);
+  let message = `Add entry: ${entry.name}`;
+  if (editing) {
+    const i = entries.findIndex(e => e.name === editing.name && e.submitted_at === editing.submitted_at);
+    if (i !== -1) entries[i] = entry; else entries.push(entry);
+    message = `Update entry: ${entry.name}`;
+  } else {
+    entries.push(entry);
+  }
   const res = await fetch(apiUrl(), {
     method: "PUT",
     headers: apiHeaders(),
     body: JSON.stringify({
-      message: `Add entry: ${entry.name}`,
+      message,
       content: b64encode(JSON.stringify(entries, null, 2)),
       sha,
       branch: "main",
@@ -890,16 +1143,24 @@ async function writeEntry(entry, attempt = 1) {
 
 btnSubmit.addEventListener("click", async () => {
   errorMsg.textContent = "";
+  if (cupStarted()) {
+    errorMsg.textContent = "The Cup has started — picks are locked.";
+    return;
+  }
   btnSubmit.disabled = true;
   btnSubmit.textContent = "Submitting…";
   const entry = {
     name: nameInput.value.trim(),
     picks: Object.fromEntries(GROUPS.map(g => [g.id, [...picks[g.id]]])),
-    submitted_at: new Date().toISOString(),
+    submitted_at: editing ? editing.submitted_at : new Date().toISOString(),
   };
+  if (editing) entry.updated_at = new Date().toISOString();
   try {
     const entries = await writeEntry(entry);
-    localStorage.setItem(LS_KEY, JSON.stringify({ name: entry.name, at: entry.submitted_at }));
+    if (!editing) {
+      localStorage.setItem(LS_KEY, JSON.stringify({ name: entry.name, at: entry.submitted_at }));
+    }
+    editing = null;
     /* render from the data we just wrote (raw CDN can lag a few minutes) */
     show("view");
     renderEntries(entries);
@@ -907,10 +1168,17 @@ btnSubmit.addEventListener("click", async () => {
     errorMsg.textContent = err.message;
     btnSubmit.disabled = false;
   } finally {
-    btnSubmit.textContent = "Submit Pick";
+    btnSubmit.textContent = editing ? "Save Changes" : "Submit Pick";
     updateSubmitState();
   }
 });
+
+/* Once the Cup begins: lock picks and land straight on the entries matrix */
+if (cupStarted()) {
+  lockForKickoff();
+  show("view");
+  loadEntries();
+}
 </script>
 <!-- v2: per-group picks, FIFA theme -->
 </body>
