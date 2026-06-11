@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>World Cup 2026 Pool</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
   :root {
     --bg: #eef1f6;
@@ -26,14 +29,16 @@
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     min-height: 100vh;
   }
-  /* ---- Hero: stadium night ---- */
+  /* ---- Hero: particle morph ---- */
   .hero {
     position: relative;
     isolation: isolate;
-    background: radial-gradient(130% 95% at 50% -20%, #16357c 0%, var(--navy) 48%, #000a26 100%);
+    background:
+      radial-gradient(90% 130% at 50% 115%, rgba(0, 114, 206, .25) 0%, rgba(0, 114, 206, 0) 55%),
+      radial-gradient(130% 95% at 50% -20%, #16357c 0%, var(--navy) 48%, #000a26 100%);
     color: #fff;
     text-align: center;
-    padding: 30px 16px 26px;
+    padding: 22px 16px 20px;
     overflow: hidden;
   }
   .hero::after { /* host-nations ribbon */
@@ -43,111 +48,29 @@
       #d52b1e 0 33.4%, #0072ce 33.4% 66.7%, #006847 66.7% 100%);
     z-index: 5;
   }
-  .hero-content { position: relative; z-index: 3; }
+  .hero-content { position: relative; z-index: 2; }
 
-  /* floodlight beams */
-  .hero .beam {
-    position: absolute; top: -30%; height: 170%; width: 26%;
-    background: linear-gradient(180deg, rgba(173, 203, 255, .26), rgba(173, 203, 255, 0) 72%);
-    filter: blur(10px);
-    transform-origin: top center;
-    pointer-events: none;
-    z-index: 1;
+  .hero-stage {
+    position: relative;
+    height: 224px;
+    max-width: 760px;
+    margin: 0 auto;
+    touch-action: pan-y;
   }
-  .hero .beam.b1 { left: 3%; animation: swayL 11s ease-in-out infinite alternate; }
-  .hero .beam.b2 { right: 3%; animation: swayR 11s ease-in-out infinite alternate; }
-  @keyframes swayL { from { transform: rotate(12deg); } to { transform: rotate(26deg); } }
-  @keyframes swayR { from { transform: rotate(-12deg); } to { transform: rotate(-26deg); } }
-
-  /* crowd camera flashes */
-  .hero .flashes {
-    position: absolute; top: 10%; left: 0;
-    width: 3px; height: 3px; border-radius: 50%;
-    background: #fff;
-    pointer-events: none;
-    z-index: 1;
-    opacity: 0;
-    box-shadow: 6vw 10px #fff, 14vw 46px #fff, 23vw 5px #fff, 31vw 32px #fff,
-                42vw 14px #fff, 55vw 40px #fff, 63vw 8px #fff, 72vw 28px #fff,
-                81vw 12px #fff, 90vw 36px #fff, 96vw 18px #fff;
-    animation: twinkle 4.2s linear infinite;
-  }
-  .hero .flashes.f2 {
-    top: 20%;
-    animation-delay: 2.1s;
-    box-shadow: 3vw 30px #fff, 11vw 8px #fff, 19vw 42px #fff, 28vw 16px #fff,
-                37vw 38px #fff, 48vw 6px #fff, 59vw 24px #fff, 68vw 44px #fff,
-                77vw 10px #fff, 86vw 30px #fff, 94vw 48px #fff;
-  }
-  @keyframes twinkle {
-    0%, 100% { opacity: 0; }
-    6%  { opacity: .9; }
-    12% { opacity: .15; }
-    18% { opacity: .65; }
-    30% { opacity: 0; }
-  }
-
-  /* the pitch */
-  .hero-pitch {
-    position: absolute; left: -12%; right: -12%; bottom: 0; height: 96px;
-    overflow: hidden;
-    background:
-      repeating-linear-gradient(90deg, rgba(255, 255, 255, .05) 0 90px, rgba(0, 0, 0, .08) 90px 180px),
-      linear-gradient(180deg, #1d8a3e, #11602a);
-    transform: perspective(420px) rotateX(42deg);
-    transform-origin: bottom center;
-    border-top: 2px solid rgba(255, 255, 255, .75);
-    z-index: 0;
-  }
-  .hero-pitch::before { /* center circle */
+  .hero-stage::before { /* soft glow behind the shape */
     content: "";
-    position: absolute; left: 50%; top: -100px;
-    width: 200px; height: 200px; margin-left: -100px;
-    border: 2px solid rgba(255, 255, 255, .75);
-    border-radius: 50%;
-  }
-  .hero-pitch::after { /* center spot */
-    content: "";
-    position: absolute; left: 50%; top: 22px;
-    width: 6px; height: 6px; margin-left: -3px;
-    background: rgba(255, 255, 255, .75);
-    border-radius: 50%;
-  }
-
-  /* rolling ball */
-  .hero-ball {
-    position: absolute; bottom: 44px; left: -70px;
-    z-index: 2;
+    position: absolute; inset: 6% 22%;
+    background: radial-gradient(50% 50% at 50% 50%, rgba(255, 200, 60, .16), transparent 70%);
     pointer-events: none;
-    animation: ballTravel 9s linear infinite;
   }
-  .hero-ball span {
-    display: block;
-    font-size: 30px;
-    line-height: 1;
-    filter: drop-shadow(0 10px 4px rgba(0, 0, 0, .35));
-    animation: ballSpin 1.4s linear infinite, ballBounce .7s ease-in-out infinite alternate;
-  }
-  @keyframes ballTravel { to { transform: translateX(calc(100vw + 140px)); } }
-  @keyframes ballSpin { to { rotate: 360deg; } }
-  @keyframes ballBounce { from { translate: 0 0; } to { translate: 0 -16px; } }
+  .hero-stage canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
 
-  /* trophy + golden title */
-  .hero-trophy {
-    display: block;
-    font-size: 2.2rem;
-    line-height: 1.1;
-    animation: trophyFloat 3.6s ease-in-out infinite;
-    filter: drop-shadow(0 0 16px rgba(255, 200, 40, .55));
-  }
-  @keyframes trophyFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-7px); }
-  }
   .hero h1 {
-    font-size: 1.9rem;
-    font-weight: 900;
-    letter-spacing: .04em;
+    font-family: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+    font-weight: 400;
+    font-size: 2.6rem;
+    letter-spacing: .07em;
+    line-height: 1;
     text-transform: uppercase;
     background:
       linear-gradient(115deg, transparent 38%, rgba(255, 255, 255, .95) 50%, transparent 62%),
@@ -164,7 +87,7 @@
     100%    { background-position: -30% 0, 0 0; }
   }
   .hero .hero-sub {
-    margin-top: 8px;
+    margin-top: 10px;
     display: flex; justify-content: center; align-items: center;
     gap: 10px; flex-wrap: wrap;
     font-size: .95rem;
@@ -186,20 +109,16 @@
     opacity: .85;
   }
 
-  body.on-home .hero { padding: 54px 16px 104px; }
-  body.on-home .hero h1 { font-size: clamp(2.2rem, 6vw, 3.6rem); }
-  body.on-home .hero-trophy { font-size: clamp(2.6rem, 7vw, 3.4rem); }
+  body.on-home .hero { padding: 30px 16px 30px; }
+  body.on-home .hero h1 { font-size: clamp(2.9rem, 8vw, 4.6rem); }
   body.on-home .hero .hero-sub { font-size: 1.05rem; }
-  body:not(.on-home) .hero { padding: 20px 16px 18px; }
-  body:not(.on-home) .hero-trophy,
-  body:not(.on-home) .hero-tag,
-  body:not(.on-home) .hero-pitch,
-  body:not(.on-home) .hero-ball { display: none; }
+  body:not(.on-home) .hero { padding: 18px 16px 16px; }
+  body:not(.on-home) .hero-stage,
+  body:not(.on-home) .hero-tag { display: none; }
 
   @media (prefers-reduced-motion: reduce) {
-    .hero .beam, .hero .flashes, .hero-trophy, .hero h1,
-    .hero-ball, .hero-ball span { animation: none; }
-    .hero-ball { display: none; }
+    .hero h1 { animation: none; }
+    .hero-stage { display: none; }
   }
 
   /* ---- Home showcase ---- */
@@ -263,7 +182,13 @@
   .screen { display: none; max-width: 1060px; margin: 0 auto; padding: 24px 16px 64px; }
   .screen.active { display: block; }
 
-  h2.page-title { text-align: center; color: var(--navy); font-size: 1.5rem; margin: 8px 0 4px; text-transform: uppercase; letter-spacing: .03em; }
+  h2.page-title {
+    text-align: center; color: var(--navy);
+    font-family: "Bebas Neue", "Arial Narrow", Impact, sans-serif;
+    font-weight: 400; font-size: 2rem;
+    margin: 8px 0 4px;
+    text-transform: uppercase; letter-spacing: .07em;
+  }
   .subtitle { text-align: center; color: var(--muted); margin-bottom: 28px; }
 
   .btn {
@@ -560,14 +485,8 @@
 <body>
 
 <div class="hero">
-  <div class="beam b1"></div>
-  <div class="beam b2"></div>
-  <i class="flashes"></i>
-  <i class="flashes f2"></i>
-  <div class="hero-pitch"></div>
-  <div class="hero-ball"><span>&#9917;</span></div>
   <div class="hero-content">
-    <span class="hero-trophy">&#127942;</span>
+    <div class="hero-stage"><canvas id="hero-canvas" aria-hidden="true"></canvas></div>
     <h1>World Cup 2026 Pool</h1>
     <div class="hero-sub">
       <span class="host"><img class="flag" src="https://flagcdn.com/48x36/ca.png" alt="Canada">Canada</span>
@@ -829,6 +748,137 @@ function tickCountdown() {
 }
 const cdTimer = setInterval(tickCountdown, 1000);
 tickCountdown();
+
+/* ============================================================
+   Hero — particle morph: trophy → ball → 2026 → Stella
+   Each glyph is rasterized offscreen and sampled into target
+   points; ~2k particles spring to them, flee the cursor, and
+   burst on click.
+   ============================================================ */
+(function () {
+  const stage = document.querySelector(".hero-stage");
+  const canvas = document.getElementById("hero-canvas");
+  if (!stage || !canvas || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const ctx = canvas.getContext("2d");
+  const DPR = Math.min(window.devicePixelRatio || 1, 2);
+  const FRAMES = ["\u{1F3C6}", "⚽", "2026", "\u{1F37A}"];
+  const HOLD_MS = 3600;
+  let W = 0, H = 0, targets = [], particles = [], frame = 0;
+  const mouse = { x: 0, y: 0, active: false };
+
+  function sampleGlyph(glyph) {
+    const off = document.createElement("canvas");
+    off.width = W; off.height = H;
+    const c = off.getContext("2d", { willReadFrequently: true });
+    c.textAlign = "center";
+    c.textBaseline = "middle";
+    if (glyph.length > 3) {
+      c.font = `900 ${H * 0.78}px Arial, sans-serif`;
+      c.fillStyle = "#ffd34d";
+    } else {
+      c.font = `${H * 0.8}px serif`; /* color emoji font takes over */
+    }
+    c.fillText(glyph, W / 2, H / 2 + H * 0.04);
+    const data = c.getImageData(0, 0, W, H).data;
+    const gap = W < 560 ? 4 : 3;
+    const pts = [];
+    for (let y = 0; y < H; y += gap) {
+      for (let x = 0; x < W; x += gap) {
+        const i = (y * W + x) * 4;
+        if (data[i + 3] > 140) {
+          let r = data[i], g = data[i + 1], b = data[i + 2];
+          if (r + g + b < 250) { r = 158; g = 180; b = 222; } /* dark pixels would vanish on navy */
+          pts.push({ x, y, color: `rgb(${r},${g},${b})` });
+        }
+      }
+    }
+    /* shuffle so morphs swirl instead of wiping top-to-bottom */
+    for (let i = pts.length - 1; i > 0; i--) {
+      const j = (Math.random() * (i + 1)) | 0;
+      [pts[i], pts[j]] = [pts[j], pts[i]];
+    }
+    return pts;
+  }
+
+  function setShape(idx) {
+    const pts = targets[idx];
+    if (!pts || !pts.length) return;
+    particles.forEach((p, i) => {
+      const t = pts[i % pts.length];
+      p.tx = t.x; p.ty = t.y; p.color = t.color;
+    });
+  }
+
+  function rebuild() {
+    W = stage.clientWidth;
+    H = stage.clientHeight;
+    if (!W || !H) { targets = []; return; }
+    canvas.width = W * DPR;
+    canvas.height = H * DPR;
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    targets = FRAMES.map(sampleGlyph);
+    const count = Math.max(...targets.map(t => t.length));
+    while (particles.length < count) {
+      particles.push({
+        x: Math.random() * W, y: Math.random() * H,
+        vx: 0, vy: 0, tx: 0, ty: 0, color: "#ffd34d",
+      });
+    }
+    particles.length = count;
+    setShape(frame);
+  }
+
+  function burst() {
+    particles.forEach(p => {
+      const a = Math.random() * Math.PI * 2;
+      const f = 6 + Math.random() * 10;
+      p.vx += Math.cos(a) * f;
+      p.vy += Math.sin(a) * f;
+    });
+  }
+
+  stage.addEventListener("pointermove", ev => {
+    const r = canvas.getBoundingClientRect();
+    mouse.x = ev.clientX - r.left;
+    mouse.y = ev.clientY - r.top;
+    mouse.active = true;
+  });
+  stage.addEventListener("pointerleave", () => mouse.active = false);
+  stage.addEventListener("pointerdown", burst);
+
+  new ResizeObserver(rebuild).observe(stage);
+  setInterval(() => {
+    frame = (frame + 1) % FRAMES.length;
+    setShape(frame);
+  }, HOLD_MS);
+
+  const R = 60, R2 = R * R;
+  (function tick() {
+    requestAnimationFrame(tick);
+    if (!W || !H || !particles.length) return;
+    ctx.clearRect(0, 0, W, H);
+    for (const p of particles) {
+      p.vx += (p.tx - p.x) * .055;
+      p.vy += (p.ty - p.y) * .055;
+      if (mouse.active) {
+        const dx = p.x - mouse.x, dy = p.y - mouse.y;
+        const d2 = dx * dx + dy * dy;
+        if (d2 < R2 && d2 > 0) {
+          const d = Math.sqrt(d2);
+          const f = (R - d) / R * 2.4;
+          p.vx += dx / d * f;
+          p.vy += dy / d * f;
+        }
+      }
+      p.vx *= .85;
+      p.vy *= .85;
+      p.x += p.vx;
+      p.y += p.vy;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, 2, 2);
+    }
+  })();
+})();
 document.querySelectorAll("[data-nav]").forEach(el =>
   el.addEventListener("click", () => show(el.dataset.nav))
 );
