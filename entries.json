@@ -155,5 +155,83 @@
     },
     "submitted_at": "2026-06-10T19:32:25.929Z",
     "updated_at": "2026-06-11T13:04:16.890Z"
+  },
+  {
+    "name": "Nickoloi",
+    "picks": {
+      "A": [
+        "MEX",
+        "KOR",
+        "CZE",
+        "RSA"
+      ],
+      "B": [
+        "SUI",
+        "CAN",
+        "BIH",
+        "QAT"
+      ],
+      "C": [
+        "BRA",
+        "MAR",
+        "SCO",
+        "HAI"
+      ],
+      "D": [
+        "TUR",
+        "PAR",
+        "USA",
+        "AUS"
+      ],
+      "E": [
+        "ECU",
+        "GER",
+        "CIV",
+        "CUW"
+      ],
+      "F": [
+        "NED",
+        "JPN",
+        "SWE",
+        "TUN"
+      ],
+      "G": [
+        "BEL",
+        "EGY",
+        "IRN",
+        "NZL"
+      ],
+      "H": [
+        "ESP",
+        "URU",
+        "KSA",
+        "CPV"
+      ],
+      "I": [
+        "FRA",
+        "SEN",
+        "NOR",
+        "IRQ"
+      ],
+      "J": [
+        "ARG",
+        "AUT",
+        "ALG",
+        "JOR"
+      ],
+      "K": [
+        "POR",
+        "COL",
+        "UZB",
+        "COD"
+      ],
+      "L": [
+        "ENG",
+        "CRO",
+        "GHA",
+        "PAN"
+      ]
+    },
+    "submitted_at": "2026-06-11T15:48:15.251Z"
   }
 ]
