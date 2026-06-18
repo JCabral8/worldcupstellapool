@@ -1151,7 +1151,7 @@ const POINTS_PER_POSITION = 3;
 
 function scoreEntry(entry, results) {
   const standings = (results && results.standings) || {};
-  const r = { points: 0, exact: 0, scored: 0, winners: 0, winnersScored: 0, perGroup: {} };
+  const r = { points: 0, exact: 0, scored: 0, perGroup: {} };
   GROUPS.forEach(g => {
     const actual = standings[g.id];
     if (!Array.isArray(actual) || !actual.length) return;
@@ -1160,12 +1160,10 @@ function scoreEntry(entry, results) {
     actual.forEach((code, i) => {
       if (!code) return;
       r.scored++;
-      if (i === 0) r.winnersScored++;
       if (pick[i] && pick[i] === code) {
         r.points += POINTS_PER_POSITION;
         groupPts += POINTS_PER_POSITION;
         r.exact++;
-        if (i === 0) r.winners++;
       }
     });
     r.perGroup[g.id] = groupPts;
@@ -1173,13 +1171,12 @@ function scoreEntry(entry, results) {
   return r;
 }
 
-/* Rank: points desc, then exact group winners desc, then name */
+/* Rank: points desc, then name (points already capture everything we track) */
 function rankedScores(entries, results) {
   return entries
     .map(e => ({ entry: e, score: scoreEntry(e, results) }))
     .sort((a, b) =>
       b.score.points - a.score.points ||
-      b.score.winners - a.score.winners ||
       a.entry.name.localeCompare(b.entry.name));
 }
 
@@ -1225,7 +1222,7 @@ function buildScoreboard(entries, results) {
   lb.innerHTML = `
     <thead><tr>
       <th>#</th><th style="text-align:left">Entrant</th>
-      <th>Points</th><th>Correct</th><th>Group&nbsp;winners</th>
+      <th>Points</th><th>Correct</th>
     </tr></thead>`;
   const lbBody = document.createElement("tbody");
   let prevPts = null, prevRank = 0;
@@ -1240,8 +1237,7 @@ function buildScoreboard(entries, results) {
       `<td>${rank}</td>` +
       `<td class="lb-name">${medal}${escapeHtml(row.entry.name)}</td>` +
       `<td class="lb-points">${row.score.points}<span class="lb-sub"> / ${maxSoFar}</span></td>` +
-      `<td class="lb-sub">${row.score.exact} / ${row.score.scored}</td>` +
-      `<td class="lb-sub">${row.score.winners} / ${row.score.winnersScored}</td>`;
+      `<td class="lb-sub">${row.score.exact} / ${row.score.scored}</td>`;
     lbBody.appendChild(tr);
   });
   lb.appendChild(lbBody);

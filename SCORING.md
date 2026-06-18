@@ -16,8 +16,9 @@ group, each position where your pick matches the actual table earns 3 points.
 **Tiebreakers** (in order):
 
 1. Most points
-2. Most exact **group winners** correct (1st-place calls)
-3. Alphabetical (placeholder — swap in a coin flip / head-to-head if you prefer)
+2. Alphabetical (placeholder — swap in a coin flip / head-to-head if you prefer)
+
+(Group winners are not tracked separately — only total correct positions matter.)
 
 The same engine does both **live** (provisional tables during the group stage)
 and **final** scoring — "live" just means `results.json` holds today's standings

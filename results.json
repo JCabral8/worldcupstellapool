@@ -1,18 +1,18 @@
 {
-  "updated": "Live · Jun 18 (MD1 in progress)",
+  "updated": "Live · Jun 18",
   "final": false,
   "standings": {
-    "A": [],
-    "B": [],
-    "C": [],
-    "D": [],
+    "A": ["MEX", "KOR", "CZE", "RSA"],
+    "B": ["SUI", "CAN", "BIH", "QAT"],
+    "C": ["SCO", "MAR", "BRA", "HAI"],
+    "D": ["USA", "AUS", "TUR", "PAR"],
     "E": ["GER", "CIV", "ECU", "CUW"],
-    "F": [],
-    "G": [],
-    "H": [],
-    "I": [],
-    "J": [],
-    "K": [],
-    "L": []
+    "F": ["SWE", "JPN", "NED", "TUN"],
+    "G": ["NZL", "IRN", "BEL", "EGY"],
+    "H": ["URU", "KSA", "ESP", "CPV"],
+    "I": ["NOR", "FRA", "SEN", "IRQ"],
+    "J": ["ARG", "AUT", "JOR", "ALG"],
+    "K": ["COL", "COD", "POR", "UZB"],
+    "L": ["ENG", "GHA", "PAN", "CRO"]
   }
 }
