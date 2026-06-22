@@ -1,5 +1,5 @@
 {
-  "updated": "Live · MD2 in progress",
+  "updated": "Live · MD2",
   "final": false,
   "standings": {
     "A": ["MEX", "KOR", "CZE", "RSA"],
@@ -8,8 +8,8 @@
     "D": ["USA", "AUS", "PAR", "TUR"],
     "E": ["GER", "CIV", "ECU", "CUW"],
     "F": ["NED", "JPN", "SWE", "TUN"],
-    "G": ["NZL", "IRN", "BEL", "EGY"],
-    "H": ["URU", "KSA", "ESP", "CPV"],
+    "G": ["EGY", "IRN", "BEL", "NZL"],
+    "H": ["ESP", "URU", "CPV", "KSA"],
     "I": ["NOR", "FRA", "SEN", "IRQ"],
     "J": ["ARG", "AUT", "JOR", "ALG"],
     "K": ["COL", "COD", "POR", "UZB"],
