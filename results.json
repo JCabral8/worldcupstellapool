@@ -1,5 +1,5 @@
 {
-  "updated": "Live · MD2",
+  "updated": "Live · MD2 (G–L finishing)",
   "final": false,
   "standings": {
     "A": ["MEX", "KOR", "CZE", "RSA"],
@@ -10,8 +10,8 @@
     "F": ["NED", "JPN", "SWE", "TUN"],
     "G": ["EGY", "IRN", "BEL", "NZL"],
     "H": ["ESP", "URU", "CPV", "KSA"],
-    "I": ["NOR", "FRA", "SEN", "IRQ"],
-    "J": ["ARG", "AUT", "JOR", "ALG"],
+    "I": ["FRA", "NOR", "SEN", "IRQ"],
+    "J": ["ARG", "AUT", "ALG", "JOR"],
     "K": ["COL", "COD", "POR", "UZB"],
     "L": ["ENG", "GHA", "PAN", "CRO"]
   }
